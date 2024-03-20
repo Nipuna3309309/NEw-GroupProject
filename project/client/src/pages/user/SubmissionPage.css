@@ -1,0 +1,25 @@
+.feedback-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .feedback-table th,
+  .feedback-table td {
+    border: 1px solid #dddddd;
+    padding: 8px;
+    text-align: left;
+  }
+  
+  .feedback-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+  }
+  
+  .feedback-table tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .feedback-table tr:hover {
+    background-color: #e9e9e9;
+  }
+  
