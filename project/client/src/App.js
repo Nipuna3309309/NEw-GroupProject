@@ -44,6 +44,7 @@ import EditEmployee from "./pages/EmployeManager/EditEmployee";
 import Feedback from "./pages/user/Feedback.js";
 import FeedbackDashboard from "./pages/user/FeedbackDashboard.js";
 import UpdateFeedback from "./pages/user/UpadteFeedback.js";
+import MostBoughtItemsChart from "./pages/Admin/MostBoughtItemsChart.js";
 function App() {
   return (
     <>
@@ -74,7 +75,7 @@ function App() {
           <Route path="admin/products" element={<Products />} />
           <Route path="admin/users" element={<Users />} />
           <Route path="admin/users/:userId" element={<ViewUser />} />
-
+          <Route path="admin/chart" element={<MostBoughtItemsChart />} />
           <Route path="admin/orders" element={<AdminOrders />} />
           <Route path="admin/create-post" element={<CreatePosts />} />
           <Route path="admin/get-posts" element={<Posts />} />

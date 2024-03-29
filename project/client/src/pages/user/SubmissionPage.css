@@ -23,3 +23,20 @@
     background-color: #e9e9e9;
   }
   
+
+  .table-container {
+    max-height: 400px; /* Adjust the height as needed */
+    overflow-y: auto;
+  }
+  
+  .table-container {
+    display: grid;
+    grid-template-rows: auto 1fr; /* Auto for header row, 1fr for scrollable content */
+    height: 400px; /* Adjust the height as needed */
+  }
+  
+  .feedback-table {
+    overflow-y: auto;
+    /* Other table styles */
+  }
+  

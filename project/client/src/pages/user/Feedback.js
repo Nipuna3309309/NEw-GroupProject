@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-
+import FeedbackDashboard from './FeedbackDashboard'
 const Feedback = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -33,11 +33,15 @@ const Feedback = () => {
       });
       // Show success message to the user
       alert('Feedback submitted successfully!');
+      window.location.reload(); // Reload page if feedback submission is successful
     } catch (error) {
       console.error('Error submitting feedback:', error);
       // Show error message to the user
       alert('Failed to submit feedback. Please try again.');
     }
+
+     
+   
   };
 
   return (
@@ -65,7 +69,11 @@ const Feedback = () => {
 
         <button type="submit">Submit Feedback</button>
       </form>
+      <div>
+<FeedbackDashboard/>
+      </div>
     </div>
+    
   );
 };
 

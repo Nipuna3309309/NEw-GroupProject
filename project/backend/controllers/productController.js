@@ -379,3 +379,32 @@ export const brainTreePaymentController = async (req, res) => {
   }
 };
 
+export const mostBoughtItemsController = async (req, res) => {
+  try {
+    const mostBoughtItems = await productModel.aggregate([
+      { $group: { _id: "$name", totalQuantity: { $sum: "$quantity" } } },
+      { $sort: { totalQuantity: -1 } },
+      { $limit: 3 },
+    ]);
+
+    // Check if mostBoughtItems is not null or empty
+    if (mostBoughtItems && mostBoughtItems.length > 0) {
+      res.status(200).json({
+        success: true,
+        mostBoughtItems,
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "No most bought items found.",
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error in retrieving most bought items.",
+      error: error.message,
+    });
+  }
+};

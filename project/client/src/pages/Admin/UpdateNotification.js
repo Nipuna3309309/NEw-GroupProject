@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import UserMenu from '../../components/Layout/UserMenu';
+import UserMenu from '../../components/Layout/AdminMenu';
 import Layout from '../../components/Layout/Layout';
 import moment from 'moment';
 
