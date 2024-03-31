@@ -15,6 +15,13 @@ import {
   braintreeTokenController,
   brainTreePaymentController,
   mostBoughtItemsController,
+  createRatingController,
+  getAllRatings,
+  getAllOfUserRatings,
+  getUserReviews,
+  deleteRatingController,
+
+
    
 } from "../controllers/productController.js";
 import { isAdmin, requireSignIn } from "../middlewares/authMiddleware.js";
@@ -76,4 +83,17 @@ router.get("/braintree/token", braintreeTokenController);
 router.post("/braintree/payment", requireSignIn, brainTreePaymentController);
 
 router.get("/mostboughtitems",mostBoughtItemsController);
+
+router.post("/giveratings/:pid",requireSignIn,createRatingController);
+
+router.get("/getAllratings/product/:pid", getAllRatings); 
+
+router.get("/getAllratings", getAllOfUserRatings); 
+
+
+router.get("/getUserRatings",requireSignIn, getUserReviews); 
+
+
+router.delete("/deleteratings/:rid", deleteRatingController ); 
+
 export default router;

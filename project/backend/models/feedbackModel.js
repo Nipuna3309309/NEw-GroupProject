@@ -23,6 +23,12 @@ const feedbackSchema = new mongoose.Schema(
       enum: ["good", "bad", "neutral"],
       required: true
     },
+    ratings: {
+      type: Number,
+      min: 1,
+      max: 5,
+      required: true
+    },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "users", // Reference to the User model

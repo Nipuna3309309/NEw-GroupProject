@@ -12,7 +12,7 @@ const CurrentUserAppointment = () => {
     const fetchAppointments = async () => {
       try {
         // Assuming your backend is running on http://localhost:8080
-        const response = await axios.get('http://localhost:8080/api/v1/appointment/getCurrent-appointments');
+        const response = await axios.get('/api/v1/appointment/getCurrent-appointments');
         setAppointments(response.data.appointments || []);
       } catch (error) {
         console.error('Error fetching appointments:', error);
@@ -24,7 +24,7 @@ const CurrentUserAppointment = () => {
 
   const handleDeleteAppointment = async (id) => {
     try {
-      await axios.delete(`http://localhost:8080/api/v1/appointment/delete-appointments/${id}`);
+      await axios.delete(`/api/v1/appointment/delete-appointments/${id}`);
       const updatedAppointments = appointments.filter(appointment => appointment._id !== id);
       setAppointments(updatedAppointments);
     } catch (error) {

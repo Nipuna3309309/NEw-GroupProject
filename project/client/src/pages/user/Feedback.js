@@ -1,14 +1,30 @@
-import React, { useState } from 'react';
 import axios from 'axios';
-import FeedbackDashboard from './FeedbackDashboard'
+import React, { useState, useEffect } from "react";
+import { useAuth } from "../../context/auth";
+
 const Feedback = () => {
+  const [auth, setAuth] = useAuth();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     message: '',
-    serviceType: 'good'
+    serviceType: 'good',
+    ratings: 0 // Initialize ratings state
   });
+
+  useEffect(() => {
+    if (auth?.user) {
+      const { email, name, phone, address } = auth.user;
+      setFormData({
+        ...formData,
+        name: name || '',
+        email: email || '',
+        phone: phone || '',
+        address: address || '',
+      });
+    }
+  }, [auth?.user]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -18,30 +34,32 @@ const Feedback = () => {
     }));
   };
 
+  const handleStarRating = (value) => {
+    setFormData(prevState => ({
+      ...prevState,
+      ratings: value // Update ratings value
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await axios.post('http://localhost:8085/api/v1/feedback/create-feedback', formData);
       console.log(response.data.data); // Assuming your backend returns feedback data
-      // Reset form data after successful submission if needed
       setFormData({
         name: '',
         email: '',
         phone: '',
         message: '',
-        serviceType: 'good'
+        serviceType: 'good',
+        ratings: 0 // Reset ratings value
       });
-      // Show success message to the user
       alert('Feedback submitted successfully!');
-      window.location.reload(); // Reload page if feedback submission is successful
+      window.location.reload();
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      // Show error message to the user
       alert('Failed to submit feedback. Please try again.');
     }
-
-     
-   
   };
 
   return (
@@ -67,13 +85,22 @@ const Feedback = () => {
           <option value="neutral">Neutral</option>
         </select>
 
+        <label>Ratings:</label>
+        <div className="star-rating">
+          {[1, 2, 3, 4, 5].map((starValue) => (
+            <button
+              key={starValue}
+              className={`star ${starValue <= formData.ratings ? 'selected' : ''}`}
+              onClick={() => handleStarRating(starValue)}
+            >
+              ⭐️
+            </button>
+          ))}
+        </div>
+
         <button type="submit">Submit Feedback</button>
       </form>
-      <div>
-<FeedbackDashboard/>
-      </div>
     </div>
-    
   );
 };
 

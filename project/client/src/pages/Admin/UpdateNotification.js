@@ -38,7 +38,7 @@ const UpdateNotification = () => {
     const handleStatusUpdate = async (notificationId, newStatus) => {
       try {
         // Make an API call to update the status using the notificationId
-        await axios.put(`http://localhost:8080/api/v1/appointment/appointment-status/${notificationId}`, { status: newStatus });
+        await axios.put(`/api/v1/appointment/appointment-status/${notificationId}`, { status: newStatus });
         // Refresh the appointments after the update
         fetchAppointments();
       } catch (error) {

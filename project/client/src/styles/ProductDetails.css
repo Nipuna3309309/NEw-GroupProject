@@ -48,3 +48,32 @@
 .similar-products .card-img-top {
   height: 300px !important;
 }
+/* ProductDetails.css */
+
+/* Star rating container */
+/* Star rating container */
+/* Star rating container */
+.star-rating {
+  margin-top: 20px;
+}
+
+/* Star button styles */
+/* Star button styles */
+.star {
+  font-size: 50px;
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  transition: background-color 0.2s ease-in-out; /* Smooth transition for background color change */
+}
+
+/* Selected star style */
+.selected {
+  background-color: rgb(223, 129, 21); /* Change background color to your desired color for selected stars */
+}
+
+/* Hover effect for stars */
+.star:hover {
+  background-color: rgb(228, 228, 44); /* Change background color to your desired color for hover effect */
+}
+

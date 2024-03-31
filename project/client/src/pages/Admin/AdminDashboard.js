@@ -33,13 +33,13 @@ const AdminDashboard = () => {
   useEffect(() => {
     // Fetch total users count
     axios
-      .get("http://localhost:8080/api/v1/auth/admin/count")
+      .get("/api/v1/auth/admin/count")
       .then((response) => setTotalUsers(response.data.userCount))
       .catch((error) => console.error("Error fetching total users count:", error));
 
     // Fetch employee managers count
     axios
-      .get("http://localhost:8080/api/v1/auth/admin/users/employeeManager/count")
+      .get("/api/v1/auth/admin/users/employeeManager/count")
       .then((response) => setEmployeeManagerCount(response.data.employeeManagerCount))
       .catch((error) => console.error("Error fetching employee managers count:", error));
   }, []);

@@ -8,7 +8,7 @@ import categoryRoutes from './routes/categoryRoutes.js'
 import productRoutes from './routes/productRoutes.js'  // Fix typo here
 import postRoutes from './routes/postRoutes.js'
 import appointmentRoutes from './routes/appointmentRoutes.js'
-import EmployeeRoutes from './routes/EmployeeRoutes.js';
+import EmployeeRoutes from './routes/EmployeeNotificationRoutes.js';
 
 import cors from 'cors'
 import FeedbackRoutes from "./routes/FeedbackRoutes.js";
@@ -29,7 +29,7 @@ app.use('/api/v1/category', categoryRoutes);
 app.use('/api/v1/product', productRoutes);  // Fix typo here
 app.use('/api/v1/post', postRoutes);
 app.use('/api/v1/appointment', appointmentRoutes);
-app.use('/api/v1/authEmployee', EmployeeRoutes);
+app.use('/api/v1/Employee', EmployeeRoutes);
 app.use('/api/v1/feedback', FeedbackRoutes );
 app.get('/', (req, res) => {
     res.send({

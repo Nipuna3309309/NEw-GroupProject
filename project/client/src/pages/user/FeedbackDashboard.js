@@ -13,6 +13,7 @@ const FeedbackDashboard = () => {
     phone: '',
     message: '',
     serviceType: '',
+    ratings: 0,
   });
 
   useEffect(() => {
@@ -60,6 +61,7 @@ const FeedbackDashboard = () => {
         phone: '',
         message: '',
         serviceType: '',
+        ratings: 0,
       });
       console.log('Feedback updated successfully');
     } catch (error) {
@@ -69,13 +71,14 @@ const FeedbackDashboard = () => {
       setIsLoading(false);
     }
   };
+
   const handleDelete = async (feedbackId) => {
     setIsLoading(true);
     setError(null);
-  
+
     try {
       const confirmed = window.confirm('Are you sure you want to delete this feedback?');
-  
+
       if (confirmed) {
         await axios.delete(`http://localhost:8085/api/v1/feedback/Deletefeedback/${feedbackId}`);
         setFeedbackList((prevFeedbackList) => prevFeedbackList.filter((feedback) => feedback._id !== feedbackId));
@@ -88,7 +91,30 @@ const FeedbackDashboard = () => {
       setIsLoading(false);
     }
   };
-  
+
+  const handleStarRating = (value) => {
+    setUpdatedFormData((prevState) => ({
+      ...prevState,
+      ratings: value,
+    }));
+  };
+
+  const getRatingLabel = (rating) => {
+    switch (rating) {
+      case 1:
+        return 'Very Bad';
+      case 2:
+        return 'Unsatisfied';
+      case 3:
+        return 'Neutral';
+      case 4:
+        return 'Good';
+      case 5:
+        return 'Perfect';
+      default:
+        return 'Unknown';
+    }
+  };
 
   return (
     <div>
@@ -106,6 +132,7 @@ const FeedbackDashboard = () => {
                   <th>Phone</th>
                   <th>Message</th>
                   <th>Service Type</th>
+                  <th>Ratings</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -117,6 +144,7 @@ const FeedbackDashboard = () => {
                     <td>{feedback.phone}</td>
                     <td>{feedback.message}</td>
                     <td>{feedback.serviceType}</td>
+                    <td>{getRatingLabel(feedback.ratings)}</td>
                     <td>
                       <button onClick={() => handleEdit(feedback._id)}>Edit</button>
                       <button onClick={() => handleDelete(feedback._id)}>Delete</button>
@@ -127,12 +155,10 @@ const FeedbackDashboard = () => {
             </table>
           </div>
 
-          {/* Edit Feedback Modal/Form Here (Conditional rendering based on selectedFeedback) */}
           {selectedFeedback && (
             <div className="edit-feedback-modal">
               <h2>Edit Feedback</h2>
               <form onSubmit={handleUpdate}>
-                {/* Input fields for editing feedback */}
                 <label htmlFor="name">Name:</label>
                 <input
                   type="text"
@@ -165,13 +191,30 @@ const FeedbackDashboard = () => {
                   required
                 />
                 <label htmlFor="serviceType">Service Type:</label>
-                <input
-                  type="text"
+                <select
                   id="serviceType"
                   value={updatedFormData.serviceType}
                   onChange={(e) => setUpdatedFormData({ ...updatedFormData, serviceType: e.target.value })}
                   required
-                />
+                >
+                  <option value="">Select service type</option>
+                  <option value="Good">Good</option>
+                  <option value="Bad">Bad</option>
+                  <option value="Neutral">Neutral</option>
+                </select>
+
+                <div className="star-rating">
+                  {[1, 2, 3, 4, 5].map((value) => (
+                    <button
+                      key={value}
+                      className={`star ${value <= updatedFormData.ratings ? 'selected' : ''}`}
+                      onClick={() => handleStarRating(value)}
+                    >
+                      ⭐️
+                    </button>
+                  ))}
+                </div>
+
                 <button type="submit">Update Feedback</button>
               </form>
               <button onClick={() => setSelectedFeedback(null)}>Close</button>

@@ -45,12 +45,16 @@ import Feedback from "./pages/user/Feedback.js";
 import FeedbackDashboard from "./pages/user/FeedbackDashboard.js";
 import UpdateFeedback from "./pages/user/UpadteFeedback.js";
 import MostBoughtItemsChart from "./pages/Admin/MostBoughtItemsChart.js";
+import ProductReviews from "./pages/user/ProductReviews.js";
+import GivenRatings from "./pages/user/GivenRatings.js";
+import ShowAlltheRatings from "./pages/Admin/ShowAlltheRatings.js";
 function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/product/:slug" element={<ProductDetails />} />
+   
         <Route path="/categories" element={<Categories />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/category/:slug" element={<CategoryProduct />} />
@@ -66,6 +70,10 @@ function App() {
           <Route path="user/feedback" element={<Feedback />} />
           <Route path="user/feedbackdashboard" element={<FeedbackDashboard />} />
           <Route path="user/updatefeedback/:Id" element={<UpdateFeedback />} />
+          <Route path="user/productReview/:productId" element={<ProductReviews />} />
+          <Route path="user/givenRatings" element={<GivenRatings />} />
+
+        
         </Route>
         <Route path="/dashboard" element={<AdminRoute />}>
           <Route path="admin" element={<AdminDashboard />} />
@@ -81,6 +89,7 @@ function App() {
           <Route path="admin/get-posts" element={<Posts />} />
           <Route path="admin/update-posts/:id" element={<UpdatePosts />} />
           <Route path="admin/update-notification" element={<UpdateNotification />} />
+          <Route path="admin/All-Ratings" element={<ShowAlltheRatings />} />
         </Route>
 
         <Route path="/dashboard" element={<EmployeeRoute />}>

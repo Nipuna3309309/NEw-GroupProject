@@ -38,6 +38,14 @@ const UserMenu = () => {
           >
             Feedback
           </NavLink>
+
+          <NavLink
+            to="/dashboard/user/givenRatings"
+            className="list-group-item list-group-item-action"
+          >
+            Ratings
+          </NavLink>
+
         </div>
       </div>
     </>

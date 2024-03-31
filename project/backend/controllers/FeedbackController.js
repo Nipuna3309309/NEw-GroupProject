@@ -13,18 +13,17 @@ export const createFeedbackController = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 // Controller for reading all feedback
 export const readAllFeedbackController = async (req, res) => {
-    try {
-      // Find all feedback documents created by the current user
-      const feedback = await Feedback.find({ createdBy: req.user._id }).populate('createdBy');
-      res.status(200).json(feedback);
-    } catch (error) {
-      console.error('Error reading feedback:', error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
+  try {
+    const feedback = await Feedback.find({ createdBy: req.user._id }).populate('createdBy');
+    res.status(200).json(feedback);
+  } catch (error) {
+    console.error('Error reading feedback:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
   
 
 // Controller for reading feedback by ID
@@ -41,6 +40,7 @@ export const readFeedbackController = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 // Controller for updating feedback by ID
 export const updateFeedbackController = async (req, res) => {

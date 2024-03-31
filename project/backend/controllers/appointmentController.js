@@ -1,3 +1,4 @@
+import EmployeeNotification from "../models/EmployeeNotification.js";
 import appointmentModel from "../models/appointmentModel.js";
 import notificationModel  from "../models/appointmentNotification.js";
 import userModel from "../models/userModel.js";
@@ -41,21 +42,37 @@ export const createAppointmentController = async (req, res) => {
       appointment: newAppointment._id,
     });
 
-    res.status(201).json({
-      success: true,
-      message: "Appointment created successfully",
-      appointment: newAppointment,
-      notification: newNotification,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      success: false,
-      message: "Error while creating appointment",
-      error: error.message,
-    });
-  }
-};
+ // Create an employee notification message
+ const employeeNotificationMessage = `Appointment ID ${newAppointment._id} created on ${newAppointment.date}`;
+
+ // Get the employee ID from req.user or any other source
+ const employeeId = req.user.employeeId; // Assuming you have employeeId in req.user
+
+ // Create the employee notification with the employee ID included
+ const newEmployeeNotification = await EmployeeNotification.create({
+   user: req.user._id,
+
+   message: employeeNotificationMessage,
+   status: 'pending',
+   appointment: newAppointment._id,
+ });
+
+ // Send the response with all created data
+ res.status(201).json({
+   success: true,
+   message: 'Appointment created successfully',
+   appointment: newAppointment,
+   employeeNotification: newEmployeeNotification,
+ });
+} catch (error) {
+ console.error(error);
+ res.status(500).json({
+   success: false,
+   message: 'Error while creating appointment',
+   error: error.message,
+ });
+}
+}
 
 export const updateAppointmentController = async (req, res) => {
   try {

@@ -2,13 +2,14 @@ import productModel from "../models/productModel.js";
 import fs from "fs";
 import slugify from "slugify";
 import categoryModel from "../models/categoryModel.js";
-
+import Ratings from "../models/RatingsModel.js";
 import braintree from "braintree";
-
+import jwt from 'jsonwebtoken';
 import dotenv from "dotenv";
 import orderModel from "../models/orderModel.js";
-
-
+import User from "../models/userModel.js";
+import { validationResult } from 'express-validator';
+import mongoose from 'mongoose'; // Import mongoose library
 import moment from "moment";
 dotenv.config();
 
@@ -126,7 +127,6 @@ export const productPhotoController = async (req, res) => {
     });
   }
 };
-
 //delete controller
 export const deleteProductController = async (req, res) => {
   try {
@@ -406,5 +406,145 @@ export const mostBoughtItemsController = async (req, res) => {
       message: "Error in retrieving most bought items.",
       error: error.message,
     });
+  }
+};
+
+export const createRatingController = async (req, res) => {
+  try {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ success: false, errors: errors.array() });
+    }
+
+    // Extract validated data from the request body
+    const { rating, review } = req.body;
+
+    // Get user ID from req.user
+    const userId = req.user._id; // Assuming req.user contains the user object with _id field
+
+    // Fetch user details including name
+    const user = await User.findById(userId); // Assuming User model has findById method
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    // Create new rating with user details
+    const newRating = new Ratings({
+      product: req.params.pid,
+      rating,
+      review,
+      user:  userId,
+       // Assuming user has a 'name' field
+      
+    });
+
+    // Save rating to the database without validating
+    await newRating.save({ validateBeforeSave: false });
+
+    res.status(201).json({ success: true, message: 'Rating created successfully', rating: newRating });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Failed to create rating', error: error.message });
+  }
+};
+// Controller function to fetch ratings for a specific product
+export const getAllRatings = async (req, res) => {
+  try {
+    // Extract the product ID from the URL parameters
+    const productId = req.params.pid;
+
+    // Fetch ratings for the specified product from the database
+    const productRatings = await Ratings.find({ product: productId })
+      .populate('user', 'name'); // Populate the username field of the User schema
+
+    // Check if ratings were found for the product
+    if (!productRatings || productRatings.length === 0) {
+      return res.status(404).json({ message: 'No ratings found for this product' });
+    }
+
+    // Send the ratings for the product as a response
+    res.status(200).json({ success: true, data: productRatings });
+  } catch (error) {
+    // Handle errors if any occur
+    console.error('Error fetching product ratings:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch product ratings' });
+  }
+};
+
+
+
+export const getAllOfUserRatings = async (req, res) => {
+  try {
+    // Fetch all ratings from the database along with user and product information
+    const allRatings = await Ratings.find()
+      .populate('user', 'name')
+      .populate('product', 'name'); // Assuming 'name' is a field in the Product schema
+
+    // Check if any ratings were found
+    if (!allRatings || allRatings.length === 0) {
+      return res.status(404).json({ message: 'No ratings found' });
+    }
+
+    // Send all ratings with user and product information as a response
+    res.status(200).json({ success: true, data: allRatings });
+  } catch (error) {
+    // Handle errors if any occur
+    console.error('Error fetching ratings:', error);
+    res.status(500).json({ success: false, error: 'Failed to fetch ratings' });
+  }
+};
+
+
+
+  export const getUserReviews = async (req, res) => {
+    try {
+      // Get user ID from req.user
+      const userId = req.user._id;
+  
+      // Fetch ratings submitted by the current user only
+      const userRatings = await Ratings.find({ user: userId }).populate('product', 'name');
+  
+      // Check if any ratings were found
+      if (!userRatings || userRatings.length === 0) {
+        return res.status(404).json({ success: false, message: 'No ratings found for the current user' });
+      }
+  
+      // Send filtered user ratings as a response
+      res.status(200).json({ success: true, data: userRatings });
+    } catch (error) {
+      console.error('Error fetching user ratings:', error);
+      res.status(500).json({ success: false, error: 'Failed to fetch user ratings' });
+    }
+  };
+  
+
+export const deleteRatingController = async (req, res) => {
+  try {
+    // Extract the rating ID from the request parameters
+    const ratingId = req.params.rid;
+    console.log('Rating ID:', ratingId); // Log the rating ID
+
+    // Check if the rating ID is valid
+    if (!mongoose.Types.ObjectId.isValid(ratingId)) {
+      return res.status(400).json({ success: false, message: 'Invalid rating ID' });
+    }
+
+    // Find the rating by ID and delete it
+    const deletedRating = await Ratings.findByIdAndDelete(ratingId);
+    console.log('Deleted Rating:', deletedRating); // Log the deleted rating
+
+    // Check if the rating was found and deleted successfully
+    if (!deletedRating) {
+      return res.status(404).json({ success: false, message: 'Rating not found' });
+    }
+
+    // Send a success response with the deleted rating
+    res.status(200).json({ success: true, message: 'Rating deleted successfully', deletedRating });
+  } catch (error) {
+    // Handle errors if any occur
+    console.error('Error deleting rating:', error);
+    res.status(500).json({ success: false, error: 'Failed to delete rating' });
   }
 };
