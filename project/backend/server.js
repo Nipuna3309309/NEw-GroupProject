@@ -9,7 +9,7 @@ import productRoutes from './routes/productRoutes.js'  // Fix typo here
 import postRoutes from './routes/postRoutes.js'
 import appointmentRoutes from './routes/appointmentRoutes.js'
 import EmployeeRoutes from './routes/EmployeeNotificationRoutes.js';
-
+import ImageRoutes from './routes/imageRoutes.js';
 import cors from 'cors'
 import FeedbackRoutes from "./routes/FeedbackRoutes.js";
 dotenv.config();
@@ -31,6 +31,7 @@ app.use('/api/v1/post', postRoutes);
 app.use('/api/v1/appointment', appointmentRoutes);
 app.use('/api/v1/Employee', EmployeeRoutes);
 app.use('/api/v1/feedback', FeedbackRoutes );
+app.use('/api/v1/image', ImageRoutes );
 app.get('/', (req, res) => {
     res.send({
         message: 'Welcome '

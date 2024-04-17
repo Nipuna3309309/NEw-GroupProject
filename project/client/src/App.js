@@ -29,6 +29,7 @@ import AdminOrders from "./pages/Admin/AdminOrders";
 import ViewUser from "./pages/Admin/ViewUser";
 import EmployeeRoute from "./components/Routes/EmployeeRoute";
 import EmployeeManagerDashboard from "./pages/EmployeManager/EmployeeManagerDashboard";
+import EmployeeManagerProfileDashboard from "./pages/EmployeManager/EmployeeManagerProfileDashboard";
 import CreatePosts from "./pages/Admin/CreatePosts";
 import Posts from "./pages/Admin/Posts";
 import UpdatePosts from "./pages/Admin/UpdatePosts";
@@ -48,6 +49,8 @@ import MostBoughtItemsChart from "./pages/Admin/MostBoughtItemsChart.js";
 import ProductReviews from "./pages/user/ProductReviews.js";
 import GivenRatings from "./pages/user/GivenRatings.js";
 import ShowAlltheRatings from "./pages/Admin/ShowAlltheRatings.js";
+import CreateRole from "./pages/Admin/CreateRole.js";
+import UploadImageForm from "./pages/user/UploadImageForm.js";
 function App() {
   return (
     <>
@@ -72,6 +75,7 @@ function App() {
           <Route path="user/updatefeedback/:Id" element={<UpdateFeedback />} />
           <Route path="user/productReview/:productId" element={<ProductReviews />} />
           <Route path="user/givenRatings" element={<GivenRatings />} />
+          <Route path="user/uploadimage" element={<UploadImageForm />} />
 
         
         </Route>
@@ -90,12 +94,14 @@ function App() {
           <Route path="admin/update-posts/:id" element={<UpdatePosts />} />
           <Route path="admin/update-notification" element={<UpdateNotification />} />
           <Route path="admin/All-Ratings" element={<ShowAlltheRatings />} />
+          <Route path="admin/createrole" element={<CreateRole />} />
         </Route>
 
         <Route path="/dashboard" element={<EmployeeRoute />}>
-          <Route path="employee" element={<EmployeeManagerDashboard />} />
+        <Route path="employee" element={<EmployeeManagerProfileDashboard />} />
+          <Route path="employee/creater" element={<EmployeeManagerDashboard />} />
           <Route path="employee/all-employees" element={<AllEmployees />} />
-          <Route path="employee/edit/:id" element={<EditEmployee />} />
+          <Route path="employee/edit/:employeeId" element={<EditEmployee />} />
         </Route>
 
         <Route path="/dashboard" element={<EmployeeUserRoute />}>

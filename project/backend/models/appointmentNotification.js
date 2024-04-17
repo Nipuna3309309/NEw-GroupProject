@@ -19,7 +19,8 @@ const notificationSchema = new mongoose.Schema
     },
     appointment: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "appointment", // Assuming you have an Appointment model
+      ref: "appointment",
+      required: true,// Assuming you have an Appointment model
     },
   },
   { timestamps: true }

@@ -62,6 +62,12 @@ const AdminMenu = () => {
           >
             Appointments
           </NavLink>
+          <NavLink
+            to="/dashboard/admin/createrole"
+            className="list-group-item list-group-item-action"
+          >
+            Role
+          </NavLink>
         </div>
       </div>
     </div>

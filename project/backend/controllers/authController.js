@@ -67,7 +67,6 @@ export const registerController = async (req, res) => {
     });
   }
 };
-
 export const loginController = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -647,6 +646,101 @@ export const deleteEmployeeController = async (req, res) => {
       success: false,
       message: "Error while deleting employee",
       error: error.message,
+    });
+  }
+};
+
+
+export const deactivateUserController = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validate if userId is provided and is a valid ObjectId
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID provided" });
+    }
+
+    // Find the user by ID and update isActive to false (deactivate)
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      { isActive: false },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User deactivated successfully",
+      updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while deactivating user",
+      error,
+    });
+  }
+};
+
+
+export const checkUserIsActive = async (req, res, next) => {
+  const { userId } = req.params; // Get the user ID from request parameters
+
+  try {
+    const user = await userModel.findById(userId); // Find user by ID
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (!user.isActive) {
+      return res.status(403).json({ error: "User is deactivated. Contact support for assistance." });
+    }
+
+    // User is active, continue with login
+    next();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+export const activateUserController = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    // Validate if userId is provided and is a valid ObjectId
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ error: "Invalid user ID provided" });
+    }
+
+    // Find the user by ID and update isActive to true (activate)
+    const updatedUser = await userModel.findByIdAndUpdate(
+      userId,
+      { isActive: true },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User activated successfully",
+      updatedUser,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error while activating user",
+      error,
     });
   }
 };

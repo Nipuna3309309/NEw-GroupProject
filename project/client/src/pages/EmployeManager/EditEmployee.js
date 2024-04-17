@@ -1,119 +1,72 @@
-// EditEmployee.js
 import React, { useEffect, useState } from "react";
-import Layout from "../../components/Layout/Layout";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
 
 const EditEmployee = () => {
-  const [employee, setEmployee] = useState({
-    name: "",
-    email: "",
-    address: "",
-    profession: "",
-  });
-  const { id } = useParams();
-  const navigate = useNavigate();
+  const { employeeId } = useParams();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [profession, setProfession] = useState("");
 
   useEffect(() => {
-    fetchEmployee();
+    fetchEmployeeData();
   }, []);
 
-  const fetchEmployee = async () => {
+  const fetchEmployeeData = async () => {
     try {
-      const response = await axios.get(`/api/v1/auth/employees/${id}`);
-      setEmployee(response.data.employee);
+      const response = await axios.get(`http://localhost:8085/api/v1/auth/employees/${employeeId}`);
+      const { name, email, phone, address, profession } = response.data.employee;
+      setName(name);
+      setEmail(email);
+      setPhone(phone);
+      setAddress(address);
+      setProfession(profession);
     } catch (error) {
-      console.error("Error fetching employee:", error);
+      console.error("Error fetching employee data:", error);
     }
   };
 
   const handleUpdateEmployee = async () => {
     try {
-      await axios.put(`/api/v1/auth/update-employees/${id}`, employee);
-      navigate("/dashboard/admin/all-employees"); // Use navigate to redirect after updating
+      await axios.put(`http://localhost:8085/api/v1/auth/update-employees/${employeeId}`, {
+        name,
+        email,
+        phone,
+        address,
+        profession,
+      });
+      alert("Employee information updated successfully!");
     } catch (error) {
       console.error("Error updating employee:", error);
     }
   };
 
-  const handleChange = (e) => {
-    setEmployee({
-      ...employee,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   return (
-    <Layout title={"Edit Employee"}>
-      <div className="container-fluid m-3 p-3">
-        <h1>Edit Employee</h1>
-        <form>
-          <div className="mb-3">
-            <label htmlFor="name" className="form-label">
-              Name
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="name"
-              name="name"
-              value={employee.name}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="email" className="form-label">
-              Email
-            </label>
-            <input
-              type="email"
-              className="form-control"
-              id="email"
-              name="email"
-              value={employee.email}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="address" className="form-label">
-              Address
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="address"
-              name="address"
-              value={employee.address}
-              onChange={handleChange}
-            />
-          </div>
-
-          <div className="mb-3">
-            <label htmlFor="profession" className="form-label">
-              Profession
-            </label>
-            <input
-              type="text"
-              className="form-control"
-              id="profession"
-              name="profession"
-              value={employee.profession}
-              onChange={handleChange}
-            />
-          </div>
-
-          <button
-            type="button"
-            className="btn btn-primary"
-            onClick={handleUpdateEmployee}
-          >
-            Update Employee
-          </button>
-        </form>
-      </div>
-    </Layout>
+    <div className="container">
+      <h1>Edit Employee</h1>
+      <form>
+        <div className="mb-3">
+          <label htmlFor="name" className="form-label">Name</label>
+          <input type="text" id="name" className="form-control" value={name} onChange={(e) => setName(e.target.value)} />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="email" className="form-label">Email</label>
+          <input type="email" id="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="phone" className="form-label">Phone</label>
+          <input type="text" id="phone" className="form-control" value={phone} onChange={(e) => setPhone(e.target.value)} />
+        </div>
+        <div className="mb-3">
+          <label htmlFor="address" className="form-label">Address</label>
+          <input type="text" id="address" className="form-control" value={address} onChange={(e) => setAddress(e.target.value)} />
+        </div>
+        
+        <button type="button" className="btn btn-primary" onClick={handleUpdateEmployee}>Update</button>
+      </form>
+    </div>
   );
 };
 

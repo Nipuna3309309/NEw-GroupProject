@@ -1,6 +1,7 @@
 import EmployeeNotification from "../models/EmployeeNotification.js";
 import appointmentModel from "../models/appointmentModel.js";
-import notificationModel  from "../models/appointmentNotification.js";
+import appointmentNotification from "../models/appointmentNotification.js";
+import AppointmentNotification from "../models/appointmentNotification.js"; // Correct import
 import userModel from "../models/userModel.js";
 import slugify from "slugify";
 
@@ -18,6 +19,7 @@ export const createAppointmentController = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "Appointment already exists",
+        appointment: existingAppointment, // Include existing appointment details in the response
       });
     }
 
@@ -33,46 +35,36 @@ export const createAppointmentController = async (req, res) => {
       phoneNumber,
     });
 
-    // Create a notification for the user
-    const notificationMessage = `New appointment created on ${newAppointment.date}`;
-    const newNotification = await notificationModel.create({
+    // Create an appointment notification message
+    const appointmentNotificationMessage = `Appointment ID ${newAppointment._id} created on ${newAppointment.date}`;
+
+    // Create the appointment notification and associate appointment ID
+    const newAppointmentNotification = await AppointmentNotification.create({
       user: req.user._id,
-      message: notificationMessage,
-      status: "unread",
-      appointment: newAppointment._id,
+      message: appointmentNotificationMessage,
+      status: 'pending',
+      appointment: newAppointment._id, // Associate appointment ID with the notification
     });
+    
+    // Send the response with all created data including the appointment ID
+    res.status(201).json({
+      success: true,
+      message: 'Appointment created successfully',
+      appointment: newAppointment,
+      appointmentNotification: newAppointmentNotification,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: 'Error while creating appointment',
+      error: error.message,
+    });
+  }
+};
 
- // Create an employee notification message
- const employeeNotificationMessage = `Appointment ID ${newAppointment._id} created on ${newAppointment.date}`;
 
- // Get the employee ID from req.user or any other source
- const employeeId = req.user.employeeId; // Assuming you have employeeId in req.user
 
- // Create the employee notification with the employee ID included
- const newEmployeeNotification = await EmployeeNotification.create({
-   user: req.user._id,
-
-   message: employeeNotificationMessage,
-   status: 'pending',
-   appointment: newAppointment._id,
- });
-
- // Send the response with all created data
- res.status(201).json({
-   success: true,
-   message: 'Appointment created successfully',
-   appointment: newAppointment,
-   employeeNotification: newEmployeeNotification,
- });
-} catch (error) {
- console.error(error);
- res.status(500).json({
-   success: false,
-   message: 'Error while creating appointment',
-   error: error.message,
- });
-}
-}
 
 export const updateAppointmentController = async (req, res) => {
   try {
@@ -137,7 +129,7 @@ export const getCurrentAppointmentController = async (req, res) => {
 
     res.json({ appointments });
   } catch (error) {
-    console.error(error);
+    console.error(error);not
     res.status(500).json({
       success: false,
       message: "Error while getting appointments",
@@ -190,7 +182,7 @@ export const getAppointmentsNotificationController = async (req, res) => {
       .find({ user: req.user._id });
 
     // Find notifications and populate user
-    const notifications = await notificationModel
+    const notifications = await appointmentNotification
       .find({ user: req.user._id })
       .populate("user", "name")
       .exec();
@@ -216,7 +208,7 @@ export const getAllNotificationAppointmentsController = async (req, res) => {
       })
       .sort({ createdAt: -1 });
 
-    const notifications = await notificationModel
+    const notifications = await AppointmentNotification
       .find({})
       .populate("user", "name")
       .populate({
@@ -255,7 +247,7 @@ export const notificationStatusController = async (req, res) => {
     const { appointmentId } = req.params;
     const { status } = req.body;
 
-    const updatedNotification = await notificationModel.findByIdAndUpdate(
+    const updatedNotification = await appointmentNotification.findByIdAndUpdate(
       appointmentId,  // Use appointmentId here
       { status },
       { new: true }

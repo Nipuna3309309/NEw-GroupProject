@@ -21,6 +21,9 @@ import {
   getEmployees,
   updateEmployeeController,
   deleteEmployeeController,
+  deactivateUserController,
+  checkUserIsActive,
+  activateUserController,
 } from "../controllers/authController.js";
 import {
   isAdmin,
@@ -34,7 +37,7 @@ const router = express.Router();
 router.post("/register", registerController);
 
 // LOGIN || post
-router.post("/login", loginController);
+router.post("/login",loginController);
 
 // Forgot password || post
 router.post("/forgot-password", forgotPasswordController);
@@ -136,7 +139,14 @@ router.post('/e-register',requireSignIn,isEmployee, employeeRegisterController);
 
 router.get('/all-employees',requireSignIn,isEmployee, getEmployees);
 
-router.get("/employees/:employeeId",requireSignIn,isEmployee, getEmpDetailsController); // Read single employee
-router.put("/update-employees/:employeeId",requireSignIn,isEmployee, updateEmployeeController); // Update employee role
+router.get("/employees/:employeeId",requireSignIn, getEmpDetailsController); // Read single employee
+router.put("/update-employees/:employeeId",requireSignIn, updateEmployeeController); // Update employee role
 router.delete("/delete-employees/:employeeId",requireSignIn,isEmployee, deleteEmployeeController);
+
+router.put('/deactivate/:userId', deactivateUserController);
+
+router.put('/activate/:userId', activateUserController);
+
+router.get('/check-deactivation/:userId', checkUserIsActive);
+
 export default router;

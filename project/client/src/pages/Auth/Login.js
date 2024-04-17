@@ -6,22 +6,28 @@ import toast from "react-hot-toast";
 import "../../styles/AuthStyles.css";
 import { useAuth } from "../../context/auth";
 import { CiLogin } from "react-icons/ci";
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [auth, setAuth] = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  // form function
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
-      const res = await axios.post("/api/v1/auth/login", {
+      const res = await axios.post("http://localhost:8085/api/v1/auth/login", {
         email,
         password,
       });
+
+      console.log(res.data); // Log the response data
+
       if (res && res.data.success) {
-        toast.success(res.data && res.data.message);
+        toast.success(res.data.message);
         setAuth({
           ...auth,
           user: res.data.user,
@@ -30,16 +36,21 @@ const Login = () => {
         localStorage.setItem("auth", JSON.stringify(res.data));
         navigate(location.state || "/");
       } else {
-        toast.error(res.data.message);
+        if (res.data.message === "Invalid Password") {
+          setErrorMessage("Invalid password. Please try again.");
+        } else {
+          setErrorMessage(res.data.message);
+        }
       }
     } catch (error) {
-      console.log(error);
+      console.error("Login error:", error);
       toast.error("Something went wrong");
     }
   };
+
   return (
     <Layout title="Login">
-      <div className="form-container ">
+      <div className="form-container">
         <form onSubmit={handleSubmit} style={{ borderRadius: "20px" }}>
           <div className="icon-container">
             <CiLogin className="icon-medium" />
@@ -53,7 +64,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="form-control"
               id="exampleInputEmail1"
-              placeholder="Enter Your Email "
+              placeholder="Enter Your Email"
               required
             />
           </div>
@@ -69,8 +80,6 @@ const Login = () => {
             />
           </div>
 
-  
-
           <button
             type="submit"
             className="btn neon-button"
@@ -78,6 +87,8 @@ const Login = () => {
           >
             LOGIN
           </button>
+
+          {errorMessage && <p className="error-message">{errorMessage}</p>}
 
           <div>
             <button
